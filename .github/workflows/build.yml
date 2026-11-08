@@ -43,9 +43,9 @@ jobs:
             sudo apt update
             sudo apt upgrade -y
             DEBIAN_FRONTEND=noninteractive sudo apt install -yq \
-              7zip attr ccache clang ffmpeg \
+              7zip attr ccache clang golang jq ffmpeg \
               libbrotli-dev libbz2-dev libgtest-dev libprotobuf-dev libunwind-dev libpcre2-dev \
-              libzstd-dev lld protobuf-compiler pcre2-utils webp openjdk-17-jdk
+              libzstd-dev lld jq protobuf-compiler pcre2-utils webp openjdk-17-jdk
               kernel="$(uname -r)"
               if (( ${kernel%%.*} < 7 )); then
                sudo apt-get install -y "linux-modules-extra-${kernel}"
