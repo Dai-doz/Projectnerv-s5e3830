@@ -40,17 +40,23 @@ jobs:
 
       - name: Set up build environment
         run: |
-          sudo apt update
-          DEBIAN_FRONTEND=noninteractive sudo apt install -yq \
-            p7zip-full jq attr ccache clang ffmpeg golang \
-            libbrotli-dev libgtest-dev libprotobuf-dev libunwind-dev libpcre2-dev \
-            libzstd-dev linux-modules-extra-$(uname -r) lld jq protobuf-compiler pcre2-utils webp \
-            curl xxd patchelf flex bison libarchive-tools build-essential python3.12-venv device-tree-compiler
-          sudo modprobe erofs f2fs
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          echo -n "${{ secrets.PLATFORM_KEY_PK8 }}" | base64 --decode > security/platform.pk8
-          echo -n "${{ secrets.PLATFORM_KEY_PEM }}" | base64 --decode > security/platform.x509.pem
+            sudo apt update
+            sudo apt upgrade -y
+            DEBIAN_FRONTEND=noninteractive sudo apt install -yq \
+              7zip attr ccache clang ffmpeg \
+              libbrotli-dev libbz2-dev libgtest-dev libprotobuf-dev libunwind-dev libpcre2-dev \
+              libzstd-dev lld protobuf-compiler webp openjdk-17-jdk
+              kernel="$(uname -r)"
+              if (( ${kernel%%.*} < 7 )); then
+               sudo apt-get install -y "linux-modules-extra-${kernel}"
+              else
+               sudo apt-get install -y "linux-modules-${kernel}"
+              fi
+            sudo modprobe erofs f2fs
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            echo -n "${{ secrets.PLATFORM_KEY_PK8 }}" | base64 --decode > security/platform.pk8
+            echo -n "${{ secrets.PLATFORM_KEY_PEM }}" | base64 --decode > security/platform.x509.pem
 
       - name: Set up JDK 11
         uses: actions/setup-java@v4
